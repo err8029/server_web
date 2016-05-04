@@ -1,7 +1,7 @@
 import json
 from flask import Flask, jsonify, abort, make_response
 
-posts = json.dumps(data)
+posts = json.dumps(posts)
 
 
 app = Flask(__name__)
