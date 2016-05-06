@@ -1,61 +1,21 @@
 import json
 from flask import Flask, jsonify, abort, make_response
-
-
-posts=[
-  {
-    "userId": 1,
-    "id": 1,
-    "title": "sunt aut facere repellat provident occaecati excepturi optio reprehenderit",
-    "body": "quia et suscipit\nsuscipit recusandae consequuntur expedita et cum\nreprehenderit molestiae ut ut quas totam\nnostrum rerum est autem sunt rem eveniet architecto"
-  },
-  {
-    "userId": 1,
-    "id": 2,
-    "title": "qui est esse",
-    "body": "est rerum tempore vitae\nsequi sint nihil reprehenderit dolor beatae ea dolores neque\nfugiat blanditiis voluptate porro vel nihil molestiae ut reiciendis\nqui aperiam non debitis possimus qui neque nisi nulla"
-  },
-  {
-    "userId": 1,
-    "id": 3,
-    "title": "ea molestias quasi exercitationem repellat qui ipsa sit aut",
-    "body": "et iusto sed quo iure\nvoluptatem occaecati omnis eligendi aut ad\nvoluptatem doloribus vel accusantium quis pariatur\nmolestiae porro eius odio et labore et velit aut"
-  }
-]
-
-comments =[
-  {
-    "postId": 1,
-    "id": 1,
-    "name": "id labore ex et quam laborum",
-    "email": "Eliseo@gardner.biz",
-    "body": "laudantium enim quasi est quidem magnam voluptate ipsam eos\ntempora quo necessitatibus\ndolor quam autem quasi\nreiciendis et nam sapiente accusantium"
-  },
-  {
-    "postId": 1,
-    "id": 2,
-    "name": "quo vero reiciendis velit similique earum",
-    "email": "Jayne_Kuhic@sydney.com",
-    "body": "est natus enim nihil est dolore omnis voluptatem numquam\net omnis occaecati quod ullam at\nvoluptatem error expedita pariatur\nnihil sint nostrum voluptatem reiciendis et"
-  },
-  {
-    "postId": 1,
-    "id": 3,
-    "name": "odio adipisci rerum aut animi",
-    "email": "Nikita@garfield.biz",
-    "body": "quia molestiae reprehenderit quasi aspernatur\naut expedita occaecati aliquam eveniet laudantium\nomnis quibusdam delectus saepe quia accusamus maiores nam est\ncum et ducimus et vero voluptates excepturi deleniti ratione"
-  },
-  {
-    "postId": 1,
-    "id": 4,
-    "name": "alias odio sit",
-    "email": "Lew@alysha.tv",
-    "body": "non et atque\noccaecati deserunt quas accusantium unde odit nobis qui voluptatem\nquia voluptas consequuntur itaque dolor\net qui rerum deleniti ut occaecati"
-  },
-]
+import comments
+import posts
+import todos
+import photos
+import users
+import albums
 
 
 app = Flask(__name__)
+
+comments = comments.comments()
+posts = posts.posts()
+todos = todos.todos()
+photos = photos.photos()
+albums = albums.albums()
+users = users.users()
 
 @app.errorhandler(404)
 def not_found(error):
@@ -148,8 +108,176 @@ def delete_post_Comments(comment_id):
     comments.remove(comment[0])
     return jsonify({'result': True})
 
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+@app.route('/todos/<int:todo_id>', methods=['GET'])
+def get_task_Todos(todo_id):
+    todo = [todo for todo in todos if todo['id'] == todo_id]
+    if len(todo) == 0:
+        abort(404)
+    return jsonify({'post': todo[0]})
+
+app.route('/todos', methods=['POST'])
+def create_post_Todos():
+    if not request.json or not 'title' in request.json or not 'userId' in request.json or not 'body' in request.json:
+        abort(400)
+    todo = {
+        'id': 1,
+        'id': posts[-1]['id'] + 1,
+        'userId': request.json['userId'],
+        'title': request.json['title'],
+        'body': request.json['body'],
+    }
+    todos.append(todo)
+    return jsonify({'post': todo}), 201
+
+app.route('/todos/<int:todo_id>', methods=['PUT'])
+def update_post_Todos(todo_id):
+    todo = [todo for todo in todos if todo['id'] == todo_id]
+    if len(todo) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    todo[0]['title'] = request.json.get('title', todo[0]['title'])
+    todo[0]['body'] = request.json.get('body', todo[0]['body'])
+    return jsonify({'post': todo[0]})
+
+@app.route('/todos/<int:todo_id>', methods=['DELETE'])
+def delete_post_Todos(todo_id):
+    todo = [todo for todo in todos if todo['id'] == todo_id]
+    if len(todo) == 0:
+        abort(404)
+    comments.remove(todo[0])
+    return jsonify({'result': True})
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+@app.route('/albums/<int:album_id>', methods=['GET'])
+def get_task_Albums(album_id):
+    album = [album for album in albums if album['id'] == album_id]
+    if len(album) == 0:
+        abort(404)
+    return jsonify({'post': album[0]})
+
+app.route('/albums', methods=['POST'])
+def create_post_Albums():
+    if not request.json or not 'title' in request.json or not 'userId' in request.json or not 'body' in request.json:
+        abort(400)
+    album = {
+        'id': 1,
+        'id': posts[-1]['id'] + 1,
+        'userId': request.json['userId'],
+        'title': request.json['title'],
+        'body': request.json['body'],
+    }
+    albums.append(album)
+    return jsonify({'post': album}), 201
+
+app.route('/albums/<int:albums_id>', methods=['PUT'])
+def update_post_Albums(album_id):
+    album = [album for album in albums if album['id'] == album_id]
+    if len(album) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    album[0]['title'] = request.json.get('title', album[0]['title'])
+    album[0]['body'] = request.json.get('body', album[0]['body'])
+    return jsonify({'post': album[0]})
+
+@app.route('/albums/<int:album_id>', methods=['DELETE'])
+def delete_post_Albums(album_id):
+    album = [album for album in albums if album['id'] == album_id]
+    if len(album) == 0:
+        abort(404)
+    albums.remove(album[0])
+    return jsonify({'result': True})
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+@app.route('/photos/<int:photo_id>', methods=['GET'])
+def get_task_Photos(photo_id):
+    photo = [photo for photo in photos if photo['id'] == photo_id]
+    if len(photo) == 0:
+        abort(404)
+    return jsonify({'post': photo[0]})
+
+app.route('/photos', methods=['POST'])
+def create_post_Photos():
+    if not request.json or not 'title' in request.json or not 'userId' in request.json or not 'body' in request.json:
+        abort(400)
+    photo = {
+        'id': 1,
+        'id': posts[-1]['id'] + 1,
+        'userId': request.json['userId'],
+        'title': request.json['title'],
+        'body': request.json['body'],
+    }
+    photos.append(photo)
+    return jsonify({'post': photo}), 201
+
+app.route('/photos/<int:photo_id>', methods=['PUT'])
+def update_post_Photos(photo_id):
+    photo = [photo for photo in photos if photo['id'] == photo_id]
+    if len(photo) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    photo[0]['title'] = request.json.get('title', photo[0]['title'])
+    photo[0]['body'] = request.json.get('body', photo[0]['body'])
+    return jsonify({'post': photo[0]})
+
+@app.route('/photos/<int:photo_id>', methods=['DELETE'])
+def delete_post_Photos(photo_id):
+    photo = [photo for photo in photo if photo['id'] == photo_id]
+    if len(photo) == 0:
+        abort(404)
+    photos.remove(album[0])
+    return jsonify({'result': True})
+
+#-----------------------------------------------------------------------------------------------------------------------------------
+
+@app.route('/users/<int:user_id>', methods=['GET'])
+def get_task_Users(user_id):
+    user = [user for user in users if user['id'] == user_id]
+    if len(user) == 0:
+        abort(404)
+    return jsonify({'post': user[0]})
+
+app.route('/user', methods=['POST'])
+def create_post_Users():
+    if not request.json or not 'title' in request.json or not 'userId' in request.json or not 'body' in request.json:
+        abort(400)
+    user = {
+        'id': 1,
+        'id': posts[-1]['id'] + 1,
+        'userId': request.json['userId'],
+        'title': request.json['title'],
+        'body': request.json['body'],
+    }
+    users.append(user)
+    return jsonify({'post': user}), 201
+
+app.route('/users/<int:user_id>', methods=['PUT'])
+def update_post_Users(user_id):
+    user = [user for user in users if user['id'] == user_id]
+    if len(user) == 0:
+        abort(404)
+    if not request.json:
+        abort(400)
+    user[0]['title'] = request.json.get('title', user[0]['title'])
+    user[0]['body'] = request.json.get('body', user[0]['body'])
+    return jsonify({'post': user[0]})
+
+@app.route('/users/<int:user_id>', methods=['DELETE'])
+def delete_post_Users(photo_id):
+    user = [user for user in user if user['id'] == user_id]
+    if len(user) == 0:
+        abort(404)
+    users.remove(album[0])
+    return jsonify({'result': True})
 
 
 
 if __name__ == "__main__":
-     app.run('0.0.0.0')
+
+     app.run(debug=True)
