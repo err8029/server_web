@@ -21,24 +21,27 @@ class Service():
             raise Exception('POST /tasks/ %s' % (post_content.status_code))
         if post_content.status_code == 201:
             print "uploaded correctly"
-      
+
 
 
 
 if __name__ == "__main__":
 
-    
-    newservice=Service("http://jsonplaceholder.typicode.com")
-    resources = ["posts","comments"]
+    num = raw_input("numero de recurs?")
+    num = str(num)
+    newservice=Service("http://localhost:5000")
+    resources = ["posts/"+num,"comments/"+num,"albums/"+num,"photos/"+num,"users/"+num,"todos/"+num]
     for r in resources:
     	data=newservice.get(r)
-    print data
+        print r
+        print "------------------------------------------------------------"
+        print data
+        print "------------------------------------------------------------"
 
-    input_data = {
-            "userId": sys.argv[1],
-            "id": sys.argv[2],
-            "title": sys.argv[3],
-            "body": sys.argv[4]
-    }
-    newservice.post(input_data,"posts")
-
+    #input_data = {
+    #        "userId": sys.argv[1],
+    #        "id": sys.argv[2],
+    #        "title": sys.argv[3],
+    #        "body": sys.argv[4]
+    #}
+    #newservice.post(input_data,"posts")
