@@ -38,10 +38,10 @@ if __name__ == "__main__":
         print data
         print "------------------------------------------------------------"
 
-    #input_data = {
-    #        "userId": sys.argv[1],
-    #        "id": sys.argv[2],
-    #        "title": sys.argv[3],
-    #        "body": sys.argv[4]
-    #}
-    #newservice.post(input_data,"posts")
+    input_data = {
+            "userId": sys.argv[1],
+            "id": sys.argv[2],
+            "title": sys.argv[3],
+            "body": sys.argv[4]
+    }
+    newservice.post(input_data,"posts")
